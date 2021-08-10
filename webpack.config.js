@@ -13,20 +13,32 @@ const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
  */
 const gather = (target, type) => {
     const directories = fs.readdirSync(target)
-                          .reduce((files, directory) => {
+                          .reduce((files, entry) => {
 
-                            const scanned = fs.readdirSync(path.resolve(target, directory))
-                                     .reduce((found, file) => {
-                                            if(file.includes(type)){
-                                                found.push({
-                                                    entry:  path.resolve(target, directory, file),
-                                                    name: file.replace(`.${type}`, '')
-                                                })
-                                            }
-                                            return found;
-                                     }, [])
+                            const entryPath = path.resolve(target, entry);
 
-                            return files.concat(scanned);
+                            if( fs.lstatSync(entryPath).isDirectory() ){
+
+                                const scanned = fs.readdirSync(entryPath)
+                                .reduce((found, subEntry) => {
+
+                                       if(subEntry.includes(type)){
+
+                                           found.push({
+                                               entry:  path.resolve(entryPath, subEntry),
+                                               name: subEntry.replace(`.${type}`, '')
+                                           });
+
+                                       }
+                                       return found;
+
+                                }, [])
+
+                                return files.concat(scanned);
+                            }
+
+                            return files;
+                            
                           }, []);
     return directories;
 };
