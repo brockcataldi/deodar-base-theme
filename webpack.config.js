@@ -11,7 +11,7 @@ const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
  * @param {string} type the file type to look for
  * @returns [] of stylesheet names and paths
  */
-const gather = (target, type) => {
+const gather = (target, type, flat = false) => {
     const directories = fs.readdirSync(target)
                           .reduce((files, entry) => {
 
@@ -24,10 +24,14 @@ const gather = (target, type) => {
 
                                        if(subEntry.includes(type)){
 
-                                           found.push({
+                                           found.push(
+                                            ( flat === true) ? path.resolve(entryPath, subEntry) :
+                                            {
                                                entry:  path.resolve(entryPath, subEntry),
                                                name: subEntry.replace(`.${type}`, '')
-                                           });
+                                           }
+                                           
+                                           );
 
                                        }
                                        return found;
@@ -98,16 +102,26 @@ module.exports = (env, options) => {
 
     const modules = [];
 
-    const styles = {
+    const blockStyles = {
         acf: gather(path.resolve(__dirname, 'blocks', 'acf'), 'scss'),
-        core: gather(path.resolve(__dirname, 'blocks', 'core'), 'scss')
+        core: gather(path.resolve(__dirname, 'blocks', 'core'), 'scss'),
     };
 
-    for( const [ key, stylesheets ] of Object.entries( styles ) ){
+    for( const [ key, stylesheets ] of Object.entries( blockStyles ) ){
         for ( const stylesheet of stylesheets ){
             modules.push(style(options, stylesheet, key));
         }
     }
+
+    const componentStyles = [
+        path.resolve(__dirname, 'source', 'index.scss'),
+        ...gather(path.resolve(__dirname, 'template-parts'), 'scss', true)
+    ];
+
+    modules.push(style(options, {
+        entry: componentStyles,
+        name: 'components'
+    }, ''))
 
     return modules;
 }
