@@ -1,18 +1,38 @@
-(function($){
 
-    // const initializeBlock = ( $block ) => {
-    //     $block.find('img').doSomething();
-    // }
+( ($, gsap) => {
 
-    // // Initialize each block on page load (front end).
-    // $(document).ready(function(){
-    //     $('.testimonial').each(function(){
-    //         initializeBlock( $(this) );
-    //     });
-    // });
+    class Demo{
+        constructor($block){
+            this.$block = $block;
 
-    // if( window.acf ) {
-    //     window.acf.addAction( 'render_block_preview/type=demo', initializeBlock );
-    // }
+            this.bind();
+        }
 
-})(jQuery);
+        bind(){
+            this.$block.on('mouseover', this.onMouseOver.bind(this));
+            this.$block.on('mouseout', this.onMouseOut.bind(this));
+        }
+
+        onMouseOver(event){
+            gsap.to(this.$block, {
+                backgroundColor:'#00FF00'
+            });
+        }
+
+        onMouseOut(event){
+            gsap.to(this.$block, {
+                backgroundColor:'#FFA500'
+            });
+        }
+
+        static initialize($block){
+            new Demo($block);
+        }
+    }
+
+    $( function(){
+        Demo.initialize( $(".demo") );
+    } );
+
+} )
+(jQuery, gsap);

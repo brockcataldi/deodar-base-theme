@@ -4,12 +4,17 @@ const fs    = require('fs');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
+const externals = {
+    jquery: 'jQuery',
+};
+
 /**
  * Scans specified directory with a depth of 1, for a specificed file type
  * 
  * @param {string} target the path of the target directory
  * @param {string} type the file type to look for
- * @returns [] of stylesheet names and paths
+ * @param {bool} flat whether or not to return an object or just string
+ * @returns {string[]} of stylesheet names and paths
  */
 const gather = (target, type, flat = false) => {
     const directories = fs.readdirSync(target)
@@ -53,7 +58,7 @@ const gather = (target, type, flat = false) => {
  * @param {object} options webpack options
  * @param {object} data the stylesheet data
  * @param {string} key the root key for filing
- * @returns 
+ * @returns {object}
  */
 const style = (options, data, key) => {
 
@@ -96,7 +101,7 @@ const style = (options, data, key) => {
  * 
  * @param {object} env I honestly have no idea what gets passed here
  * @param {object} options Webpack options from the cli
- * @returns 
+ * @returns {void}
  */
 module.exports = (env, options) => {
 
@@ -118,10 +123,21 @@ module.exports = (env, options) => {
         ...gather(path.resolve(__dirname, 'template-parts'), 'scss', true)
     ];
 
-    modules.push(style(options, {
+    modules.push( style(options, {
         entry: componentStyles,
         name: 'components'
-    }, ''))
+    }, '') );
+
+
+    const blockScripts = {
+        acf: gather(path.resolve(__dirname, 'blocks', 'acf'), 'js'),   
+    }
+
+    for( const [ key, stylesheets ] of Object.entries( blockScripts ) ){
+        for ( const stylesheet of stylesheets ){
+            modules.push(style(options, stylesheet, key));
+        }
+    }
 
     return modules;
 }

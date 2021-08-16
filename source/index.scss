@@ -1,6 +1,23 @@
 /// Index File For Global Styles
 
+:root{
+	--global--color-black: #000000;
+	--global--color-white: #ffffff;
+	--global--color-gray: #aaaaaa;
+	--global--color-dark-gray: #313133;
+	--global--color-red: #E52141;
+	--global--color-blue: #26458B;
+	--global--color-sky: #379392;
+
+	--global--font-size--1: 0.75rem; // 12px
+    --global--font-size-0: 1rem; // 16px
+	--global--font-size-1: 1.2rem; // 19px
+	--global--font-size-2: 1.5rem; // 24px
+	--global--font-size-3: 2.5rem; // 40px
+	--global--font-size-4: 3.6rem; // 58px
+	--global--font-size-5: 5.16rem; // 82.5px
+}
+
 html, body{
     margin: 0;
-    font-family: 'Lato', sans-serif;
 }

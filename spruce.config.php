@@ -14,5 +14,11 @@ define('SPRUCE_CONFIGURATION', array(
             'name' => 'components', 
             'file' => 'build/components.css' 
         ),
+    ),
+    'scripts' => array(
+        array(
+            'name'  => 'gsap',
+            'uri'   => 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js'
+        )
     )
 ));

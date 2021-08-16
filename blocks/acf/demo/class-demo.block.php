@@ -21,4 +21,9 @@ class Demo_Block extends Spruce_Block{
             'type' => 'text',
 		)
     );
+
+    public static array $params = array(
+        'script' => true,
+        'dependencies' => array( 'jquery', 'gsap' )
+    );
 }
