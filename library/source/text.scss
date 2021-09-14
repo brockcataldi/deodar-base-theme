@@ -1,0 +1,70 @@
+@use 'sass:string';
+@use 'sass:list';
+@use 'sass:meta';
+
+@function split( $text, $delimiter: '' ){
+
+    @if meta.type-of($text) != 'string' {
+        @error '"$text" must be of type string';
+    }
+
+    @if meta.type-of($delimiter) != 'string' {
+        @error '"$delimiter" must be of type string';
+    }
+
+    @if string.length($text) == 0 {
+        @return $text;
+    }
+
+    $parts: ();
+
+    @if $delimiter == ''{
+        
+        @for $i from 1 through string.length($text){
+            $parts: list.append($parts, string.nth($text, $i));
+        }
+
+    }
+    @else{
+        $index: string.index($text, $delimiter);
+        $delimiter-length: string.length($delimiter);
+
+        @while $index != null {
+            $parts: list.append( $parts, string.slice( $text, 1, $index - 1 ) );
+            $text: string.slice( $text, $index + $delimiter-length );
+            $index: string.index( $text, $delimiter );
+        }
+
+        $parts: list.append( $parts, $text );
+
+    }
+
+    @return $parts;
+}
+
+@function trim($string){
+
+    @if $string == '' or $string == ' '{
+        @return '';
+    }
+
+    @while string.slice($string, 1, 1) == ' '{
+        $string: string.slice($string, 2);
+    }
+
+    @while string.slice($string, string.length($string)) == ' '{
+        $string: string.slice($string, 1, string.length($string) - 1);        
+    }
+
+    @return $string;
+}
+
+@function replace($string, $search, $replace: ''){
+    $index: string.index($string, $search);
+  
+    @if $index {
+      @return string.slice($string, 1, $index - 1) + $replace + replace(string.slice($string, $index + string.length($search)), $search, $replace);
+    }
+    
+    @return $string;
+}

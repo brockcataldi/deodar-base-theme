@@ -1,0 +1,33 @@
+@use 'sass:meta';
+@use 'sass:map';
+
+@function map( $map ) {
+    @return (
+        'style' : if(map.has-key($map, 'style') == true, map.get($map, 'style'), 'normal'),
+        'variant' : if(map.has-key($map, 'variant') == true, map.get($map, 'variant'), 'normal'),
+        'weight' : if(map.has-key($map, 'weight') == true, map.get($map, 'weight'), 'normal'),
+        'size' : if(map.has-key($map, 'size') == true, map.get($map, 'size'), 1rem),
+        'line-height' : if(map.has-key($map, 'line-height') == true, map.get($map, 'line-height'), 1),
+        'family' : if(map.has-key($map, 'family') == true, map.get($map, 'family'), 'sans-serif'),
+    );
+}
+
+@function style( $map ){
+    @return #{map.get($map, 'style')} #{map.get($map, 'variant')} #{map.get($map, 'weight')} #{map.get($map, 'size')}/#{map.get($map, 'line-height')} #{map.get($map, 'family')};
+}
+
+@function generate( $values: () ) {
+
+    @if meta.type-of($values) != 'map'{
+        @error '"$values" must be of type map';
+    }
+
+    $map: ();
+
+    @each $key, $value in $values {
+        $font-map: map( $value );
+        $map: map.set( $map, $key, style( $font-map ) );
+    }
+
+    @return $map;
+}

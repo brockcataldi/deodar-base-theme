@@ -1,0 +1,271 @@
+@use 'sass:map';
+@use 'sass:list';
+@use 'sass:string';
+@use 'sass:meta';
+
+@use 'text';
+@use 'array';
+
+$modifiers: (
+    '!': 'not',
+    '$': 'only'
+);
+
+$media-types: (
+    'all': 'all',
+    'screen': 'screen',
+    'print': 'print',
+    'speech': 'speech'
+);
+
+$sizes: (
+    'extra-small': (
+        'upper': 480px,
+        'shorthand': 'xs'
+    ),
+    'small': (
+        'lower': 481px,
+        'upper': 768px,
+        'shorthand': 's'
+    ),
+    'medium': (
+        'lower': 769px,
+        'upper': 1024px,
+        'shorthand': 'm' 
+    ),
+    'large': (
+        'lower': 1025px,
+        'upper': 1200px,
+        'shorthand': 'l'
+    ),
+    'extra-large': (
+        'lower': 1201,
+        'shorthand': 'xl'
+    )
+);
+
+$delimiter: '&';
+$delimiter-value: 'and';
+
+$unknown-media-type: 'screen';
+
+$unknown-target: 'width';
+
+@function _generate-default-queries() {
+
+    $selectors: $media-types;
+
+    @each $size-key, $size in $sizes{
+
+        $has-lower: map.has-key($size, 'lower');
+        $lower: map.get($size, 'lower');
+
+        $has-upper: map.has-key($size, 'upper');
+        $upper: map.get($size, 'upper');
+
+        $has-shorthand: map.has-key($size, 'shorthand');
+        $shorthand: map.has-key($size, 'shorthand');
+
+        $selectors: map.merge( 
+            $selectors, 
+            ( 
+                '< #{$size-key}': '(max-width: #{if($has-lower == true, $lower, $upper)})',
+                '<#{$size-key}': '(max-width: #{if($has-lower == true, $lower, $upper)})' 
+            ) 
+        ); 
+        
+        $selectors: map.merge( 
+            $selectors, 
+            ( 
+                '> #{$size-key}': '(min-width: #{if($has-upper == true, $upper, $lower)})', 
+                '>#{$size-key}': '(min-width: #{if($has-upper == true, $upper, $lower)})'
+            ) 
+        ); 
+
+        @if $has-shorthand == true {
+            
+            $selectors: map.merge( 
+                $selectors, 
+                ( 
+                    '< #{$shorthand}': '(max-width: #{if($has-lower == true, $lower, $upper)})',
+                    '<#{$shorthand}': '(max-width: #{if($has-lower == true, $lower, $upper)})' 
+                ) 
+            ); 
+            
+            $selectors: map.merge( 
+                $selectors, 
+                ( 
+                    '> #{$shorthand}': '(min-width: #{if($has-upper == true, $upper, $lower)})', 
+                    '>#{$shorthand}': '(min-width: #{if($has-upper == true, $upper, $lower)})' 
+                ) 
+            ); 
+        }
+
+        @if $has-lower == true and $has-upper == true {
+            $selectors: map.merge( 
+                $selectors, 
+                ( $size-key: '(min-width: #{$lower}) and (max-width: #{$upper})' ) 
+            );
+
+            @if $has-shorthand == true {
+            
+                $selectors: map.merge( 
+                    $selectors, 
+                    ( $size-key: '(min-width: #{$lower}) and (max-width: #{$upper})' ) 
+                );
+            }
+    
+        }
+
+    }
+
+    @return $selectors;
+}
+
+$selector-sections: _generate-default-queries();
+
+@function _generate-query($parts){
+
+    $target: map.get($parts, 'target');
+    $comparator: map.get($parts, 'comparator');
+
+    $target: if($comparator == '>', 'min-#{$target}', if($comparator == '<', 'max-#{$target}', $target));
+
+    @return '(#{$target}: #{map.get($parts, 'unit')})';
+}
+
+@function _handle-unknown($section){
+
+    $contained-comparator: null;
+
+    @each $comparator in ( '>', '<', ':'){
+        @if string.index($section, $comparator) != null{
+            $contained-comparator: $comparator;
+        }
+    }
+
+    @if $contained-comparator == null{
+        @error '"#{$section}" is an invalid statement #1';
+    }
+
+    $section: text.replace($section, "(");
+    $section: text.replace($section, ")");
+
+    $parts: text.split($section, $contained-comparator);
+    $parts: array.inject($parts, $contained-comparator);
+    $parts: array.filter($parts, '');
+
+    $contained-comparator-location: list.index($parts, $contained-comparator);
+    $parts-length: list.length($parts);
+
+    @if $contained-comparator-location == 1 and $parts-length == 2{
+        @return _generate-query((
+            'target':  $unknown-target,
+            'comparator': text.trim(list.nth($parts, 1)), 
+            'unit': text.trim(list.nth($parts, 2))
+        ));
+    }
+    @else if $contained-comparator-location == 2 $parts-length == 3{
+        @return _generate-query((
+            'target':  text.trim(list.nth($parts, 1)),
+            'comparator': text.trim(list.nth($parts, 2)), 
+            'unit': text.trim(list.nth($parts, 3))
+        ));
+    }
+    @else{
+        @error '"#{$section}" is an invalid statement #2';
+    }
+}
+
+@function _evaluate( $selector ) {
+
+    $has-delimiter: string.index( $selector, $delimiter ) != null;
+    $has-modifier:  false;
+    $contained-modifier: '';
+
+    @each $modifier-key, $modifier in $modifiers {
+        @if $modifier-key == string.slice($selector, 1, string.length($modifier-key)){
+            $has-modifier: true;
+            $selector: string.slice($selector, string.length($modifier-key) + 1);
+            $contained-modifier: '#{$modifier} ';
+        }
+    }
+
+    $selector: text.trim($selector);
+
+    @if $has-delimiter == false{
+        $has-media-type: false;
+
+        @each $media-type in map.keys($media-types) {
+            @if $media-type == $selector{
+                $has-media-type: true;
+            }
+        }
+
+        @each $section-key, $section in $selector-sections{
+            @if $selector == $section-key {
+                @return if(
+                    $has-media-type == false, 
+                    '#{$contained-modifier}#{$unknown-media-type} and #{$section}', 
+                    '#{$contained-modifier}#{$section}'
+                );
+            }
+        }
+
+        $query-string: _handle-unknown($selector);
+
+        @return if(
+            $has-media-type == false, 
+            '#{$contained-modifier}#{$unknown-media-type} and #{$query-string}', 
+            '#{$contained-modifier}#{$query-string}'
+        );
+
+    }
+    @else{
+        $query: ();
+        $has-media-type: false;
+
+        @each $selector-section in text.split($selector, $delimiter){
+
+            $selector-section: text.trim($selector-section);
+
+            @each $media-type in map.keys($media-types) {
+                @if $media-type == $selector-section{
+                    $has-media-type: true;
+                }
+            }
+            
+            $has-alias: false;
+            @each $section-key, $section in $selector-sections{
+                @if $selector-section == $section-key {
+                    $query: list.append($query, '#{$section}');
+                    $has-alias: true;
+                }
+            }
+
+            @if $has-alias == false{
+                $query: list.append($query, _handle-unknown($selector-section));
+            }
+        }
+
+        $query-string: array.join($query, ' #{$delimiter-value} ');
+
+        @return if(
+            $has-media-type == false, 
+            '#{$contained-modifier}#{$unknown-media-type} and #{$query-string}', 
+            '#{$contained-modifier}#{$query-string}'
+        );
+    }
+}
+
+@mixin media($selector){
+    @media #{_evaluate($selector)}{
+        @content;
+    }
+}
+
+@mixin is($selector){
+    @include media($selector){
+        @content;
+    }
+}

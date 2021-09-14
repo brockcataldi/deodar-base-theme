@@ -1,22 +1,45 @@
 /// Index File For Global Styles
+@use '~library/spruce.scss';
 
-:root{
-	--global--color-black: #000000;
-	--global--color-white: #ffffff;
-	--global--color-gray: #aaaaaa;
-	--global--color-dark-gray: #313133;
-	--global--color-red: #E52141;
-	--global--color-blue: #26458B;
-	--global--color-sky: #379392;
-
-	--global--font-size--1: 0.75rem; // 12px
-    --global--font-size-0: 1rem; // 16px
-	--global--font-size-1: 1.2rem; // 19px
-	--global--font-size-2: 1.5rem; // 24px
-	--global--font-size-3: 2.5rem; // 40px
-	--global--font-size-4: 3.6rem; // 58px
-	--global--font-size-5: 5.16rem; // 82.5px
-}
+@include spruce.root((
+	'color': (
+		'red': #ff0000,
+		'green': #00ff00,
+		'blue': #0000ff
+	),
+	'font': (
+		'family': (
+			'headline': '"Oswald", sans-serif',
+			'body': '"Lato", sans-serif'
+		),
+		'weight': (
+			'thin'          : 100,
+			'extra-light'   : 200,
+			'light'         : 300,
+			'regular'       : 400,
+			'medium'        : 500,
+			'semi-bold'     : 600,
+			'bold'          : 700,
+			'extra-bold'    : 800,
+			'heavy'         : 900,            
+		),
+		'sizes': (
+			'extra-small': 32px,
+		),
+	),
+	'type': (
+		'headline-1': (
+			'family': '"Lato", sans-serif', 
+			'weight': 800, 
+			'size': 54px 
+		),
+		'headline-2': (
+			'family': '"Lato", sans-serif',
+			'weight': 700,
+			'size': 48px
+		),
+	)
+));
 
 html, body{
     margin: 0;

@@ -1,0 +1,82 @@
+@use 'sass:list';
+@use 'sass:meta';
+
+@function join( $list, $delimiter: '' ){
+    @if meta.type-of($list) != 'list'{
+        @error '"$list" must be of type list';
+    }
+
+    @if meta.type-of($delimiter) != 'string'{
+        @error '"$delimiter" must be of type string';
+    }     
+
+    $string: '';
+    $length:  list.length( $list );
+
+    @for $i from 1 through $length {
+        $string: '#{ $string }#{ list.nth( $list, $i ) }';
+
+        @if $i != $length {
+            $string: '#{ $string }#{ $delimiter }';
+        }
+    }
+
+    @return $string;
+}
+
+
+@function inject($list, $glue){
+
+    $new: ();
+    
+    @for $i from 1 through list.length($list){
+    
+        $new: list.append($new, list.nth($list, $i));
+    
+        @if $i != list.length($list){
+    
+            $new: list.append($new, $glue);
+        }
+    }
+
+    @return $new;
+}
+
+@function filter($list, $value: ''){
+
+    $new: ();
+
+    @each $item in $list {
+        @if $item != $value {
+            $new: list.append($new, $item);
+        }
+    }
+
+    @return $new;
+}
+
+
+@function matches($list1, $list2){
+
+    @for $i from 1 through list.length($list1){
+
+        @if list.nth($list1, $i) != list.nth($list2, $i){
+            @return false;
+        }
+
+    }
+
+    @return true;
+}
+
+@function contains($list, $item){
+
+    @each $entry in $list{
+        @if $entry == $list{
+            @return true;
+        }
+    }
+
+    @return false;
+
+}

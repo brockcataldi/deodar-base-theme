@@ -65,6 +65,11 @@ const style = (options, data, key) => {
     const { name, entry } = data;
 
     return {
+        resolve: {
+            alias: {
+                library: path.resolve(__dirname, 'library'),
+            }
+        },
         mode: options.mode,
         entry: {
             [name]: entry
@@ -94,7 +99,6 @@ const style = (options, data, key) => {
         ],
     };
 };
-
 
 /**
  * Creates the webpack config file

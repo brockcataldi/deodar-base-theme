@@ -1,0 +1,70 @@
+@use 'sass:meta';
+@use 'sass:map';
+@use 'sass:list';
+
+@use 'text';
+@use 'type';
+@use 'array';
+
+@mixin root( $values: (), $scope: 'global' ) {
+
+    @if meta.type-of($values) != 'map'{
+        @error '"$values" must be of type map';
+    }
+
+    @if meta.type-of($scope) != 'string'{
+        @error '"$scope" must be of type string';
+    }
+
+
+    // Format the type styles and update the values map
+    $has-type   : map.has-key($values, 'type');
+    $type       : if($has-type == true, type.generate(map.get($values, 'type')), null );
+    $values     : if($has-type == true, map.remove($values, 'type'), $values);
+    $values     : if($has-type == true, map.merge($values, ( 'type' : $type) ), $values);
+
+    :root{
+        @include _set( null, $values, $scope );
+    }
+}
+
+@mixin _set( $prefix: null, $values, $scope ) {
+
+    $type: meta.type-of($values);
+
+    @if $type == 'map' {
+        @each $key, $value in $values {
+            @include _set(
+                if($prefix == null, ( $key ), list.append( $prefix, $key ) ),
+                $value, 
+                $scope
+            );
+        }
+    }
+    @else {
+        @include set(
+            $prefix,
+            $values, 
+            $scope
+        )
+    }
+}
+
+@mixin set( $prefix, $value, $scope: 'local' ) {
+    $is-list: meta.type-of($prefix) == 'list';
+    --#{$scope}--#{if($is-list == true, array.join( $prefix, '-' ), $prefix)}: #{$value};
+}
+
+
+@function get( $prefix, $scope: 'global', $default: null){
+    $is-list: meta.type-of($prefix) == 'list';
+
+    @if $default == null{
+        @return var(--#{$scope}--#{if($is-list == true, array.join( $prefix, '-' ), $prefix)});
+    }
+    @else{
+        @return var(--#{$scope}--#{if($is-list == true, array.join( $prefix, '-' ), $prefix)}, $default);
+    }
+    
+}
+

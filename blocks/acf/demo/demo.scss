@@ -1,5 +1,8 @@
+@use '~library/spruce';
+
 .demo{
     background-color: orange;
+    color: spruce.get('color-red');
 }
 
 
