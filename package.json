@@ -20,12 +20,13 @@
   },
   "homepage": "https://github.com/brockcataldi/spruce-theme#readme",
   "devDependencies": {
+    "chokidar": "^3.5.2",
     "css-loader": "^6.2.0",
     "mini-css-extract-plugin": "^2.2.0",
     "sass": "^1.37.5",
     "sass-loader": "^12.1.0",
     "style-loader": "^3.2.1",
-    "webpack": "^5.48.0",
+    "webpack": "^5.53.0",
     "webpack-cli": "^4.7.2",
     "webpack-remove-empty-scripts": "^0.7.1"
   }

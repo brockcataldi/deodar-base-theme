@@ -62,9 +62,14 @@
     @if $default == null{
         @return var(--#{$scope}--#{if($is-list == true, array.join( $prefix, '-' ), $prefix)});
     }
-    @else{
-        @return var(--#{$scope}--#{if($is-list == true, array.join( $prefix, '-' ), $prefix)}, $default);
-    }
     
+    @return var(--#{$scope}--#{if($is-list == true, array.join( $prefix, '-' ), $prefix)}, $default);
 }
 
+@function color($value, $scope: 'global', $default: null) {
+    @return get(('color', $value), $scope, $default);
+}
+
+@function type($value, $scope: 'global', $default: null) {
+    @return get(('type', $value), $scope, $default);
+}

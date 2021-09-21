@@ -12,7 +12,7 @@ define('SPRUCE_CONFIGURATION', array(
         ),
         array( 
             'name' => 'components', 
-            'file' => 'build/components.css' 
+            'file' => 'build/main.css' 
         ),
     ),
     'scripts' => array(

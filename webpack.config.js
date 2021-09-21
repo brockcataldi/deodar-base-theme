@@ -1,79 +1,57 @@
-
 const path  = require('path');
 const fs    = require('fs');
+
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
-const externals = {
-    jquery: 'jQuery',
+const getBlockEntryPoints = (directory) => {
+
+    const directoryURI = path.resolve(__dirname, 'blocks', directory);
+    const blockStyles = {};
+
+    try{
+        if(fs.existsSync(directoryURI)){
+            const directoryEntries = fs.readdirSync(directoryURI);
+
+            for(const directoryEntry of directoryEntries){
+                if(directoryEntry.includes('.') == false){
+
+                    const fileStylesURI = path.resolve(directoryURI, directoryEntry, `${directoryEntry}.scss`);
+                    const fileScriptsURI = path.resolve(directoryURI, directoryEntry, `${directoryEntry}.js`);
+                    const entryPoints = [];
+
+
+                    if(fs.existsSync(fileStylesURI)){
+                        entryPoints.push(fileStylesURI);
+                    }
+
+                    if(fs.existsSync(fileScriptsURI)){
+                        entryPoints.push(fileScriptsURI);
+                    }
+
+                    blockStyles[directoryEntry] = entryPoints;
+                }
+            }
+        }
+        return blockStyles;
+    }catch(error){
+        console.error(error);
+    }
 };
 
-/**
- * Scans specified directory with a depth of 1, for a specificed file type
- * 
- * @param {string} target the path of the target directory
- * @param {string} type the file type to look for
- * @param {bool} flat whether or not to return an object or just string
- * @returns {string[]} of stylesheet names and paths
- */
-const gather = (target, type, flat = false) => {
-    const directories = fs.readdirSync(target)
-                          .reduce((files, entry) => {
-
-                            const entryPath = path.resolve(target, entry);
-
-                            if( fs.lstatSync(entryPath).isDirectory() ){
-
-                                const scanned = fs.readdirSync(entryPath)
-                                .reduce((found, subEntry) => {
-
-                                       if(subEntry.includes(type)){
-
-                                           found.push(
-                                            ( flat === true) ? path.resolve(entryPath, subEntry) :
-                                            {
-                                               entry:  path.resolve(entryPath, subEntry),
-                                               name: subEntry.replace(`.${type}`, '')
-                                           }
-                                           
-                                           );
-
-                                       }
-                                       return found;
-
-                                }, [])
-
-                                return files.concat(scanned);
-                            }
-
-                            return files;
-                            
-                          }, []);
-    return directories;
-};
-
-/**
- * Creates a webpack module for the stylesheet
- * 
- * @param {object} options webpack options
- * @param {object} data the stylesheet data
- * @param {string} key the root key for filing
- * @returns {object}
- */
-const style = (options, data, key) => {
-
-    const { name, entry } = data;
-
+const getBlockModule = (options, key) => {
     return {
+        entry: () => {
+            return getBlockEntryPoints(key)
+        },
         resolve: {
             alias: {
-                library: path.resolve(__dirname, 'library'),
+                'scss': path.resolve(__dirname, 'source', 'scss' ),
+                'js': path.resolve(__dirname, 'source', 'js' ),
+                'template-parts': path.resolve(__dirname, 'template-parts')
             }
         },
         mode: options.mode,
-        entry: {
-            [name]: entry
-        },
         module: {
             rules: [
                 {
@@ -98,52 +76,95 @@ const style = (options, data, key) => {
             }),
         ],
     };
-};
+}
 
-/**
- * Creates the webpack config file
- * 
- * @param {object} env I honestly have no idea what gets passed here
- * @param {object} options Webpack options from the cli
- * @returns {void}
- */
-module.exports = (env, options) => {
+const getBlocksModules = (options) => {
 
+    const directories = fs.readdirSync(path.resolve(__dirname, 'blocks'));
     const modules = [];
 
-    const blockStyles = {
-        acf: gather(path.resolve(__dirname, 'blocks', 'acf'), 'scss'),
-        core: gather(path.resolve(__dirname, 'blocks', 'core'), 'scss'),
-    };
+    for(const directory of directories){
 
-    for( const [ key, stylesheets ] of Object.entries( blockStyles ) ){
-        for ( const stylesheet of stylesheets ){
-            modules.push(style(options, stylesheet, key));
-        }
-    }
-
-    const componentStyles = [
-        path.resolve(__dirname, 'source', 'index.scss'),
-        ...gather(path.resolve(__dirname, 'template-parts'), 'scss', true)
-    ];
-
-    modules.push( style(options, {
-        entry: componentStyles,
-        name: 'components'
-    }, '') );
-
-
-    const blockScripts = {
-        acf: gather(path.resolve(__dirname, 'blocks', 'acf'), 'js'),   
-    }
-
-    for( const [ key, stylesheets ] of Object.entries( blockScripts ) ){
-        for ( const stylesheet of stylesheets ){
-            modules.push(style(options, stylesheet, key));
-        }
+        modules.push(getBlockModule(options, directory));
     }
 
     return modules;
 }
-  
-  
+
+const getPartsEntryPoints = () => {
+    const partsURI = path.resolve(__dirname, 'template-parts');
+
+    const entryPoints = [
+        path.resolve(__dirname, 'source', 'index.scss'),
+        path.resolve(__dirname, 'source', 'index.js'),
+    ];
+
+    try{
+        if(fs.existsSync(partsURI)){
+            const partsEntries = fs.readdirSync(partsURI);
+
+            for(const partsEntry of partsEntries){
+                if(partsEntry.includes('.') == false){
+
+                    const fileStylesURI = path.resolve(partsURI, partsEntry, `${partsEntry}.scss`);
+
+                    if(fs.existsSync(fileStylesURI)){
+                        entryPoints.push(fileStylesURI);
+                    }
+                }
+            }
+        }
+
+        return { main: entryPoints };
+    }catch(error){
+        console.error(error);
+    }
+
+}
+
+const getPartsModule = (options) => {
+
+    return [{
+        entry: () => {
+            return getPartsEntryPoints()
+        },
+        resolve: {
+            alias: {
+                'scss': path.resolve(__dirname, 'source', 'scss' ),
+                'js': path.resolve(__dirname, 'source', 'js' ),
+                'template-parts': path.resolve(__dirname, 'template-parts')
+            }
+        },
+        mode: options.mode,
+        module: {
+            rules: [
+                {
+                    test: /\.(sa|sc|c)ss$/,
+                    use: [
+                        MiniCssExtractPlugin.loader,
+                        "css-loader",
+                        "sass-loader",
+                    ],
+                },
+            ],
+        },
+        output: {
+            path: path.resolve(__dirname, 'build'),
+            filename: '[name].js'
+        },
+        plugins: [
+            new RemoveEmptyScriptsPlugin(),
+            new MiniCssExtractPlugin({
+                filename: "[name].css",
+                chunkFilename: "[id].css"
+            }),
+        ],
+    }];
+}
+
+module.exports = (env, options) => {
+    return [
+        ...getBlocksModules(options),
+        ...getPartsModule(options)
+    ];
+}

@@ -1,13 +1,13 @@
-@use '~library/spruce';
+@use '~scss/spruce';
 
-.demo{
+.demo {
     background-color: orange;
     color: spruce.get('color-red');
 }
 
-
-.editor-styles-wrapper{
-    .demo{
+.editor-styles-wrapper {
+    .demo {
+        
         background-color: green;
     }
 }
