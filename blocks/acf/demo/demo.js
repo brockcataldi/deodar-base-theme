@@ -26,7 +26,6 @@
 
         static initialize($block){
             new Demo($block);
-            new Demo2($block);
         }
     }
 
