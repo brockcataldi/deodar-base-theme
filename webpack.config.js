@@ -4,10 +4,10 @@ const fs    = require('fs');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 
-const getBlockEntryPoints = (directory) => {
+const getBlockPoints = (directory) => {
 
     const directoryURI = path.resolve(__dirname, 'blocks', directory);
-    const blockStyles = {};
+    const blockPoints = [];
 
     try{
         if(fs.existsSync(directoryURI)){
@@ -20,7 +20,6 @@ const getBlockEntryPoints = (directory) => {
                     const fileScriptsURI = path.resolve(directoryURI, directoryEntry, `${directoryEntry}.js`);
                     const entryPoints = [];
 
-
                     if(fs.existsSync(fileStylesURI)){
                         entryPoints.push(fileStylesURI);
                     }
@@ -29,21 +28,24 @@ const getBlockEntryPoints = (directory) => {
                         entryPoints.push(fileScriptsURI);
                     }
 
-                    blockStyles[directoryEntry] = entryPoints;
+                    blockPoints.push({ 
+                        name: directoryEntry,
+                        entry: entryPoints, 
+                        output:  path.resolve(directoryURI, directoryEntry)
+                    });
                 }
             }
         }
-        return blockStyles;
+        return blockPoints;
     }catch(error){
         console.error(error);
     }
 };
 
-const getBlockModule = (options, key) => {
+const getBlockModule = (options, points) => {
+
     return {
-        entry: () => {
-            return getBlockEntryPoints(key)
-        },
+        entry: points.entry,
         resolve: {
             alias: {
                 'scss': path.resolve(__dirname, 'source', 'scss' ),
@@ -65,14 +67,13 @@ const getBlockModule = (options, key) => {
             ],
         },
         output: {
-            path: path.resolve(__dirname, 'build', key),
-            filename: '[name].js'
+            path: points.output,
+            filename: `${points.name}.build.js`
         },
         plugins: [
             new RemoveEmptyScriptsPlugin(),
             new MiniCssExtractPlugin({
-                filename: "[name].css",
-                chunkFilename: "[id].css"
+                filename: `${points.name}.build.css`
             }),
         ],
     };
@@ -80,12 +81,18 @@ const getBlockModule = (options, key) => {
 
 const getBlocksModules = (options) => {
 
-    const directories = fs.readdirSync(path.resolve(__dirname, 'blocks'));
-    const modules = [];
+    const blocksLocation = path.resolve(__dirname, 'blocks');
+    const directories = fs.readdirSync(blocksLocation);
+    let modules = [];
 
     for(const directory of directories){
 
-        modules.push(getBlockModule(options, directory));
+        if(!directory.includes('.')){
+            modules = [
+                ...modules, 
+                ...getBlockPoints(directory).map((points) => getBlockModule(options, points))
+            ];
+        }
     }
 
     return modules;
@@ -150,13 +157,12 @@ const getPartsModule = (options) => {
         },
         output: {
             path: path.resolve(__dirname, 'build'),
-            filename: '[name].js'
+            filename: '[name].build.js'
         },
         plugins: [
             new RemoveEmptyScriptsPlugin(),
             new MiniCssExtractPlugin({
-                filename: "[name].css",
-                chunkFilename: "[id].css"
+                filename: "[name].build.css"
             }),
         ],
     }];

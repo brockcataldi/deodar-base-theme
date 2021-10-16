@@ -1,3 +1,7 @@
 node_modules
 .DS_Store
+
+# These are to mitigate build conflicts, remove if you want
 build/
+*.build.css
+*.build.js

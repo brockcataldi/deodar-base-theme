@@ -1,5 +1,4 @@
 ( ($, gsap) => {
-
     class Demo{
         constructor($block){
             this.$block = $block;
@@ -35,3 +34,5 @@
 
 } )
 (jQuery, gsap);
+
+//# sourceURL=webpack://spruce-theme/./blocks/acf/demo/demo.js?
