@@ -1,11 +1,8 @@
 <header class="header">
     <nav>
-        <ul>
-            <li><a href="#">Fake Item</a></li>
-            <li><a href="#">Fake Item</a></li>
-            <li><a href="#">Fake Item</a></li>
-            <li><a href="#">Fake Item</a></li>
-            <li><a href="#">Fake Item</a></li>
-        </ul>
+        <?php wp_nav_menu( array( 
+            'menu' => 'primary_menu',
+            'walker' => new Basic_Walker() 
+		) ); ?>
     </nav>
 </header>

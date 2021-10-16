@@ -24,7 +24,7 @@ define( 'SPRUCE_CONFIGURATION', array(
         ),
         array( 
             'name' => 'components', 
-            'file' => 'build/main.css' 
+            'file' => 'build/main.build.css' 
         ),
     ),
     ///
@@ -51,6 +51,9 @@ define( 'SPRUCE_CONFIGURATION', array(
         'primary_menu' => __( 'Primary Menu', CHILD_THEME ),
         'footer_menu' => __( 'Footer Menu', CHILD_THEME ),
     ),
+    ///
+    /// Sidebars
+    ///
     'sidebars' => array(
         array(
             'before_widget' => '<div class="widget %2$s">',
