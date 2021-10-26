@@ -37,7 +37,7 @@ define( 'SPRUCE_CONFIGURATION', array(
         ),
         array( 
             'name' => 'components', 
-            'file' => 'build/main.build.css',
+            'file' => 'build/main.build.js',
             'dependencies' => array('jquery', 'gsap')
         ),
     ),
