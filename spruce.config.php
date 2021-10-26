@@ -34,7 +34,12 @@ define( 'SPRUCE_CONFIGURATION', array(
         array(
             'name'  => 'gsap',
             'uri'   => 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.7.1/gsap.min.js'
-        )
+        ),
+        array( 
+            'name' => 'components', 
+            'file' => 'build/main.build.css',
+            'dependencies' => array('jquery', 'gsap')
+        ),
     ),
     ///
     /// Theme Supports
@@ -75,7 +80,7 @@ define( 'SPRUCE_CONFIGURATION', array(
     /// Customizations
     ///
     'customizations' => 'auto',
-     ///
+    ///
     /// Bundles
     ///
     'bundles' => 'auto'

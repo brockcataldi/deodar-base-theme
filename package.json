@@ -22,6 +22,8 @@
   "devDependencies": {
     "chokidar": "^3.5.2",
     "css-loader": "^6.2.0",
+    "gsap": "^3.8.0",
+    "jquery": "^3.6.0",
     "mini-css-extract-plugin": "^2.2.0",
     "sass": "^1.37.5",
     "sass-loader": "^12.1.0",

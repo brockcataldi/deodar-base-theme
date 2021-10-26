@@ -76,6 +76,10 @@ const getBlockModule = (options, points) => {
                 filename: `${points.name}.build.css`
             }),
         ],
+        externals: {
+            jquery: 'jQuery',
+            gsap: 'gsap'
+        }
     };
 }
 
@@ -165,6 +169,10 @@ const getPartsModule = (options) => {
                 filename: "[name].build.css"
             }),
         ],
+        externals: {
+            jquery: 'jQuery',
+            gsap: 'gsap'
+        }
     }];
 }
 
