@@ -171,6 +171,9 @@ const getPartsModule = (options) => {
             new MiniCssExtractPlugin({
                 filename: "[name].build.css"
             }),
+            new MiniCssExtractPlugin({
+                filename: "../editor-style.css"
+            })
         ],
         externals: {
             jquery: 'jQuery',
