@@ -116,12 +116,15 @@ const getPartsEntryPoints = () => {
 
             for(const partsEntry of partsEntries){
                 if(partsEntry.includes('.') == false){
+		
+					const partsFiles = fs.readdirSync(path.resolve(partsURI, partsEntry));
 
-                    const fileStylesURI = path.resolve(partsURI, partsEntry, `${partsEntry}.scss`);
+					for(const partsFile of partsFiles){
 
-                    if(fs.existsSync(fileStylesURI)){
-                        entryPoints.push(fileStylesURI);
-                    }
+						if(partsFile.endsWith(".scss")){
+							entryPoints.push(path.resolve(partsURI, partsEntry, partsFile));
+						}
+					}
                 }
             }
         }
