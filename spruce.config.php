@@ -46,8 +46,9 @@ define( 'SPRUCE_CONFIGURATION', array(
     ///
     'supports'   => array(
         'title-tag',
+	'editor-styles',
         'html5' => array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption', 'style', 'script' ),
-        'post-thumbnails' => array('post', 'page')
+        'post-thumbnails' => array('post', 'page'),
     ),
     ///
     /// Navigation Menus
