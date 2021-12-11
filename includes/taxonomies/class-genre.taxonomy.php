@@ -1,6 +1,6 @@
 <?php 
 
-class Genre_Taxonomy extends Spruce_Taxonomy{
+class Genre_Taxonomy extends Deodar_Taxonomy{
 
     public static string $taxon = 'genre';
 

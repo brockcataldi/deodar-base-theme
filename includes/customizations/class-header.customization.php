@@ -1,6 +1,6 @@
 <?php 
 
-class Header_Customization extends Spruce_Customization{
+class Header_Customization extends Deodar_Customization{
 	
 	public function __construct(){
 		parent::__construct();

@@ -1,6 +1,6 @@
 <?php 
 
-class Enable_Svg_Bundle extends Spruce_Bundle {
+class Enable_Svg_Bundle extends Deodar_Bundle {
 
 	public function __construct(){
 		parent::__construct();

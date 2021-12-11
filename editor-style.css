@@ -1,0 +1,39 @@
+/*!************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./source/index.scss ***!
+  \************************************************************************************************************/
+:root {
+  --global--color-red: #ff0000;
+  --global--color-green: #00ff00;
+  --global--color-blue: #0000ff;
+  --global--font-family-headline: "Oswald", sans-serif;
+  --global--font-family-body: "Lato", sans-serif;
+  --global--font-weight-thin: 100;
+  --global--font-weight-extra-light: 200;
+  --global--font-weight-light: 300;
+  --global--font-weight-regular: 400;
+  --global--font-weight-medium: 500;
+  --global--font-weight-semi-bold: 600;
+  --global--font-weight-bold: 700;
+  --global--font-weight-extra-bold: 800;
+  --global--font-weight-heavy: 900;
+  --global--font-sizes-extra-small: 32px;
+  --global--type-headline-1: normal normal 800 54px/1 "Lato", sans-serif;
+  --global--type-headline-2: normal normal 700 48px/1 "Lato", sans-serif;
+}
+
+html, body {
+  margin: 0;
+  background-color: var(--global--color-red);
+}
+/*!****************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./template-parts/footer/footer.scss ***!
+  \****************************************************************************************************************************/
+.footer {
+  background-color: yellow;
+}
+/*!****************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./template-parts/header/header.scss ***!
+  \****************************************************************************************************************************/
+.header {
+  background-color: maroon;
+}

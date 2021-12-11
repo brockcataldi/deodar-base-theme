@@ -1,6 +1,6 @@
 <?php 
 
-class Demo_Block extends Spruce_Block{
+class Demo_Block extends Deodar_Block{
 
     public static string $key = 'demo';
     

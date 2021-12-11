@@ -1,6 +1,6 @@
 <?php 
 
-class Disable_Comments_Bundle extends Spruce_Bundle{
+class Disable_Comments_Bundle extends Deodar_Bundle {
 
 	public function __construct(){
 		parent::__construct();

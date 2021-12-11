@@ -1,8 +1,8 @@
-@use '~scss/spruce';
+@use '~scss/deodar';
 
 .demo {
     background-color: orange;
-    color: spruce.get('color-red');
+    color: deodar.get('color-red');
 }
 
 .editor-styles-wrapper {

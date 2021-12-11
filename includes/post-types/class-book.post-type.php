@@ -1,6 +1,6 @@
 <?php 
 
-class Book_Post_Type extends Spruce_Post_Type{
+class Book_Post_Type extends Deodar_Post_Type{
 
     public static string $post_type = 'book';
 

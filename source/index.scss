@@ -1,7 +1,7 @@
 /// Index File For Global Styles
-@use '~scss/spruce';
+@use '~scss/deodar';
 
-@include spruce.root((
+@include deodar.root((
 	'color': (
 		'red': #ff0000,
 		'green': #00ff00,
@@ -44,5 +44,5 @@
 html, body{
     margin: 0;
 
-	background-color: spruce.color('red');
+	background-color: deodar.color('red');
 }

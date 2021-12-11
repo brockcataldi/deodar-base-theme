@@ -1,6 +1,6 @@
 <?php 
 
-class Filter_Empty_P_Bundle extends Spruce_Bundle{
+class Filter_Empty_P_Bundle extends Deodar_Bundle {
 
 	public function __construct(){
 		parent::__construct();

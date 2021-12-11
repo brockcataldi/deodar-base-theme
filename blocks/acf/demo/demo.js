@@ -34,5 +34,3 @@
 
 } )
 (jQuery, gsap);
-
-//# sourceURL=webpack://spruce-theme/./blocks/acf/demo/demo.js?

@@ -1,5 +1,5 @@
 {
-  "name": "spruce-theme",
+  "name": "deodar-theme",
   "version": "1.0.0",
   "description": "",
   "main": "webpack.config.js",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brockcataldi/spruce-theme.git"
+    "url": "git+https://github.com/brockcataldi/deodar-theme.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/brockcataldi/spruce-theme/issues"
+    "url": "https://github.com/brockcataldi/deodar-theme/issues"
   },
-  "homepage": "https://github.com/brockcataldi/spruce-theme#readme",
+  "homepage": "https://github.com/brockcataldi/deodar-theme#readme",
   "devDependencies": {
     "chokidar": "^3.5.2",
     "css-loader": "^6.2.0",

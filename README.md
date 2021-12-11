@@ -1,1 +1,1 @@
-# Spruce Theme
+# Deodar Theme

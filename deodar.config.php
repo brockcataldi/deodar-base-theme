@@ -1,9 +1,9 @@
 <?php
-define( 'CHILD_THEME', 'spruce-theme' );
+define( 'CHILD_THEME', 'deodar-theme' );
 
-define( 'SPRUCE_CONFIGURATION', array(
+define( 'DEODAR_CONFIGURATION', array(
     ///
-    /// The option to enable/disable the spruce vanity comment
+    /// The option to enable/disable the deodar vanity comment
     /// this is disabled by default but it'd be nice if you did.
     ///
 	'vanity' => true,
