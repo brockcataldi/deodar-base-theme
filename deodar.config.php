@@ -3,11 +3,6 @@ define( 'CHILD_THEME', 'deodar-theme' );
 
 define( 'DEODAR_CONFIGURATION', array(
     ///
-    /// The option to enable/disable the deodar vanity comment
-    /// this is disabled by default but it'd be nice if you did.
-    ///
-	'vanity' => true,
-    ///
     /// Block Loading
     ///
     'blocks' => array(
