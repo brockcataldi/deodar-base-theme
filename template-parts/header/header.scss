@@ -1,3 +1,5 @@
+@use '~scss/deodar';
+
 .header{
-    background-color: maroon;
+    background-color: deodar.color('green');
 }

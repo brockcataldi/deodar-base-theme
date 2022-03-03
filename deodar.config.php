@@ -18,8 +18,13 @@ define( 'DEODAR_CONFIGURATION', array(
             'uri'  => 'https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap' 
         ),
         array( 
-            'name' => 'components', 
-            'file' => 'build/main.build.css' 
+            'name' => 'index', 
+            'file' => 'build/index.build.css' 
+        ),
+        array( 
+            'name' => 'single-post', 
+            'template' => 'single-post.php',
+            'file' => 'build/single-post.build.css' 
         ),
     ),
     ///
@@ -32,7 +37,7 @@ define( 'DEODAR_CONFIGURATION', array(
         ),
         array( 
             'name' => 'components', 
-            'file' => 'build/main.build.js',
+            'file' => 'build/index.build.js',
             'dependencies' => array('jquery', 'gsap')
         ),
     ),

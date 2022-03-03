@@ -102,89 +102,90 @@ const getBlocksModules = (options) => {
     return modules;
 }
 
-const getPartsEntryPoints = () => {
-    const partsURI = path.resolve(__dirname, 'template-parts');
+const getBaseEntryPoints = () => {
 
-    const entryPoints = [
-        path.resolve(__dirname, 'source', 'index.scss'),
-        path.resolve(__dirname, 'source', 'index.js'),
-    ];
+    const entryPoints = {};
+    const partsURI = path.resolve(__dirname, 'source');
 
     try{
-        if(fs.existsSync(partsURI)){
+        if(fs.existsSync( partsURI )){
             const partsEntries = fs.readdirSync(partsURI);
-
+            
             for(const partsEntry of partsEntries){
-                if(partsEntry.includes('.') == false){
-		
-					const partsFiles = fs.readdirSync(path.resolve(partsURI, partsEntry));
+                if(partsEntry.includes('.') != false){
+                    const name = partsEntry.split('.')[0];
 
-					for(const partsFile of partsFiles){
-
-						if(partsFile.endsWith(".scss")){
-							entryPoints.push(path.resolve(partsURI, partsEntry, partsFile));
-						}
-					}
+                    if( name in entryPoints ){
+                        entryPoints[name].push(path.resolve(__dirname, 'source', partsEntry));
+                    }else{
+                        entryPoints[name] = [path.resolve(__dirname, 'source', partsEntry)]
+                    }
                 }
             }
         }
-
-        return { main: entryPoints };
-    }catch(error){
+    }
+    catch(error){
         console.error(error);
     }
 
+    return entryPoints;
 }
 
-const getPartsModule = (options) => {
+const getBaseModules = (options) => {
 
-    return [{
-        entry: () => {
-            return getPartsEntryPoints()
-        },
-        resolve: {
-            alias: {
-                'scss': path.resolve(__dirname, 'source', 'scss' ),
-                'js': path.resolve(__dirname, 'source', 'js' ),
-                'template-parts': path.resolve(__dirname, 'template-parts')
-            }
-        },
-        mode: options.mode,
-        module: {
-            rules: [
-                {
-                    test: /\.(sa|sc|c)ss$/,
-                    use: [
-                        MiniCssExtractPlugin.loader,
-                        "css-loader",
-                        "sass-loader",
-                    ],
-                },
+    const baseModules = [];
+
+    for (const [key, value] of Object.entries(getBaseEntryPoints())) {
+        
+        baseModules.push({
+            entry: { [key]: value},
+            resolve: {
+                alias: {
+                    'scss': path.resolve(__dirname, 'source', 'scss' ),
+                    'js': path.resolve(__dirname, 'source', 'js' ),
+                    'template-parts': path.resolve(__dirname, 'template-parts')
+                }
+            },
+            mode: options.mode,
+            module: {
+                rules: [
+                    {
+                        test: /\.(sa|sc|c)ss$/,
+                        use: [
+                            MiniCssExtractPlugin.loader,
+                            "css-loader",
+                            "sass-loader",
+                        ],
+                    },
+                ],
+            },
+            output: {
+                path: path.resolve(__dirname, 'build'),
+                filename: '[name].build.js'
+            },
+            plugins: [
+                new RemoveEmptyScriptsPlugin(),
+                new MiniCssExtractPlugin({
+                    filename: "[name].build.css"
+                }),
+                new MiniCssExtractPlugin({
+                    filename: "../editor-style.css"
+                })
             ],
-        },
-        output: {
-            path: path.resolve(__dirname, 'build'),
-            filename: '[name].build.js'
-        },
-        plugins: [
-            new RemoveEmptyScriptsPlugin(),
-            new MiniCssExtractPlugin({
-                filename: "[name].build.css"
-            }),
-            new MiniCssExtractPlugin({
-                filename: "../editor-style.css"
-            })
-        ],
-        externals: {
-            jquery: 'jQuery',
-            gsap: 'gsap'
-        }
-    }];
+            externals: {
+                jquery: 'jQuery',
+                gsap: 'gsap'
+            }
+        })
+    }
+
+
+    return baseModules;
 }
 
 module.exports = (env, options) => {
     return [
         ...getBlocksModules(options),
-        ...getPartsModule(options)
+        ...getBaseModules(options)
     ];
 }

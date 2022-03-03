@@ -1,6 +1,10 @@
 /*!************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./source/index.scss ***!
   \************************************************************************************************************/
+.header {
+  background-color: var(--global--color-green);
+}
+
 :root {
   --global--color-red: #ff0000;
   --global--color-green: #00ff00;
@@ -24,16 +28,4 @@
 html, body {
   margin: 0;
   background-color: var(--global--color-red);
-}
-/*!****************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./template-parts/footer/footer.scss ***!
-  \****************************************************************************************************************************/
-.footer {
-  background-color: yellow;
-}
-/*!****************************************************************************************************************************!*\
-  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./template-parts/header/header.scss ***!
-  \****************************************************************************************************************************/
-.header {
-  background-color: maroon;
 }

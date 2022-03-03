@@ -1,4 +1,4 @@
-class Header{
+export default class Header{
 
     constructor(){
         this.bind();

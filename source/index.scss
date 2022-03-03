@@ -1,5 +1,6 @@
 /// Index File For Global Styles
 @use '~scss/deodar';
+@use '~template-parts/header/header.scss';
 
 @include deodar.root((
 	'color': (
